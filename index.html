@@ -116,11 +116,11 @@
         /* luna */
         .moon {
             position: absolute;
-            top: 60px;
-            right: 12%;
-            width: 52px;
-            height: 52px;
+            top: clamp(30px, 6vh, 60px);
+            right: clamp(5%, 8%, 12%);
             border-radius: 50%;
+            width: clamp(36px, 7vw, 52px);
+            height: clamp(36px, 7vw, 52px);
             background: radial-gradient(circle at 38% 38%, #f8efd4 0%, #e8d5a0 60%, #c8a85a 100%);
             box-shadow: 0 0 20px 6px rgba(248, 239, 212, .18), 0 0 60px 20px rgba(248, 239, 212, .06);
             animation: moonGlow 6s ease-in-out infinite
@@ -147,12 +147,13 @@
         /* título */
         .title {
             position: absolute;
-            top: 72px;
+            top: clamp(40px, 8vh, 72px);
             left: 0;
             width: 100%;
             text-align: center;
             z-index: 10;
-            animation: fadeDown .8s ease-out both
+            animation: fadeDown .8s ease-out both;
+            padding: 0 16px
         }
 
         @keyframes fadeDown {
@@ -168,20 +169,23 @@
         }
 
         .title h1 {
-            font-size: clamp(42px, 8vw, 72px);
+            font-size: clamp(36px, 10vw, 72px);
             font-weight: 300;
-            letter-spacing: 12px;
+            letter-spacing: clamp(6px, 2vw, 12px);
             color: #ffe89e;
             text-shadow: 0 0 40px rgba(255, 200, 80, .3), 0 2px 4px rgba(0, 0, 0, .4)
         }
 
         .title p {
-            margin-top: 10px;
-            font-size: clamp(13px, 2.5vw, 17px);
-            letter-spacing: 7px;
+            margin-top: 8px;
+            font-size: clamp(11px, 2.8vw, 17px);
+            letter-spacing: clamp(2px, 1.5vw, 7px);
             color: #ffd276;
             opacity: .85;
-            font-style: italic
+            font-style: italic;
+            max-width: 90vw;
+            margin-left: auto;
+            margin-right: auto
         }
 
         /* separador */
@@ -198,8 +202,8 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: min(760px, 98vw);
-            height: min(560px, 55vh);
+            width: min(760px, 100vw);
+            height: min(560px, 58vh);
             z-index: 5
         }
 
@@ -237,6 +241,52 @@
                 transform: translateY(-13px) scale(1.12)
             }
         }
+
+        /* móvil pequeño */
+        @media (max-width: 480px) {
+            .title {
+                top: clamp(28px, 6vh, 50px)
+            }
+
+            .divider {
+                width: 80px;
+                margin-top: 10px
+            }
+
+            .scene {
+                height: min(480px, 55vh)
+            }
+        }
+
+        /* landscape móvil */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .title {
+                top: 10px
+            }
+
+            .title h1 {
+                font-size: clamp(22px, 6vw, 40px)
+            }
+
+            .title p {
+                margin-top: 4px;
+                font-size: clamp(10px, 2vw, 13px)
+            }
+
+            .divider {
+                margin-top: 6px
+            }
+
+            .scene {
+                height: 75vh
+            }
+
+            .moon {
+                top: 8px;
+                width: 28px;
+                height: 28px
+            }
+        }
     </style>
 </head>
 
@@ -262,8 +312,8 @@
         <div class="scene">
             <div class="ground-glow"></div>
 
-            <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);overflow:visible" width="560"
-                height="540" viewBox="0 0 560 540">
+            <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);overflow:visible;width:min(560px,100vw);height:auto" width="560"
+                height="540" viewBox="0 0 560 540" preserveAspectRatio="xMidYMax meet">
                 <defs>
                     <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="0%" stop-color="#2b1a08" />
