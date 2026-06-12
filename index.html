@@ -207,6 +207,16 @@
             z-index: 5
         }
 
+        @media (max-width: 600px) {
+            .scene {
+                height: 72vh
+            }
+
+            .title {
+                top: clamp(20px, 4vh, 40px)
+            }
+        }
+
         /* suelo */
         .ground-glow {
             position: absolute;
@@ -559,6 +569,18 @@
     </div>
 
     <script>
+        // Ajuste responsive del viewBox del SVG
+        const svg = document.querySelector('.scene svg');
+        function updateViewBox() {
+            if (window.innerWidth <= 600) {
+                svg.setAttribute('viewBox', '60 140 440 400');
+            } else {
+                svg.setAttribute('viewBox', '0 0 560 540');
+            }
+        }
+        updateViewBox();
+        window.addEventListener('resize', updateViewBox);
+
         // Estrellas
         const starsEl = document.getElementById('stars');
         const starData = [
