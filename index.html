@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Majo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Georgia', serif
+        }
+
+        .garden {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(180deg, #0a0618 0%, #130c2a 40%, #1c1035 70%, #0e0820 100%)
+        }
+
+        /* aurora suave */
+        .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            pointer-events: none;
+            overflow: hidden
+        }
+
+        .aurora::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 10%;
+            width: 80%;
+            height: 300px;
+            background: radial-gradient(ellipse at 50% 50%, rgba(120, 60, 220, .13) 0%, rgba(80, 30, 160, .07) 45%, transparent 70%);
+            animation: auroraPulse 8s ease-in-out infinite
+        }
+
+        .aurora::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 25%;
+            width: 50%;
+            height: 200px;
+            background: radial-gradient(ellipse at 50% 50%, rgba(180, 100, 255, .09) 0%, transparent 65%);
+            animation: auroraPulse 11s ease-in-out infinite reverse
+        }
+
+        @keyframes auroraPulse {
+
+            0%,
+            100% {
+                opacity: .6;
+                transform: scaleX(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleX(1.08)
+            }
+        }
+
+        /* estrellas */
+        .stars {
+            position: absolute;
+            inset: 0;
+            pointer-events: none
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #fff;
+            animation: twinkle var(--d, 3s) ease-in-out infinite
+        }
+
+        .star.big {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 4px 1px rgba(255, 255, 255, .5)
+        }
+
+        .star.sm {
+            width: 1.5px;
+            height: 1.5px
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: .2;
+                transform: scale(.8)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3)
+            }
+        }
+
+        /* luna */
+        .moon {
+            position: absolute;
+            top: 60px;
+            right: 12%;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 38%, #f8efd4 0%, #e8d5a0 60%, #c8a85a 100%);
+            box-shadow: 0 0 20px 6px rgba(248, 239, 212, .18), 0 0 60px 20px rgba(248, 239, 212, .06);
+            animation: moonGlow 6s ease-in-out infinite
+        }
+
+        @keyframes moonGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px 6px rgba(248, 239, 212, .18), 0 0 60px 20px rgba(248, 239, 212, .06)
+            }
+
+            50% {
+                box-shadow: 0 0 28px 10px rgba(248, 239, 212, .26), 0 0 80px 30px rgba(248, 239, 212, .1)
+            }
+        }
+
+        .moon-crater {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(180, 140, 60, .35)
+        }
+
+        /* título */
+        .title {
+            position: absolute;
+            top: 72px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            animation: fadeDown .8s ease-out both
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .title h1 {
+            font-size: clamp(42px, 8vw, 72px);
+            font-weight: 300;
+            letter-spacing: 12px;
+            color: #ffe89e;
+            text-shadow: 0 0 40px rgba(255, 200, 80, .3), 0 2px 4px rgba(0, 0, 0, .4)
+        }
+
+        .title p {
+            margin-top: 10px;
+            font-size: clamp(13px, 2.5vw, 17px);
+            letter-spacing: 7px;
+            color: #ffd276;
+            opacity: .85;
+            font-style: italic
+        }
+
+        /* separador */
+        .divider {
+            margin: 14px auto 0;
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 210, 100, .5), transparent)
+        }
+
+        /* contenedor de la planta */
+        .scene {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(760px, 98vw);
+            height: min(560px, 55vh);
+            z-index: 5
+        }
+
+        /* suelo */
+        .ground-glow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: radial-gradient(ellipse at 50% 100%, rgba(180, 130, 50, .15) 0%, transparent 70%);
+            pointer-events: none
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-11px)
+            }
+        }
+
+        @keyframes floatCenter {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1.12)
+            }
+
+            50% {
+                transform: translateY(-13px) scale(1.12)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="garden">
+        <div class="aurora"></div>
+
+        <div class="moon">
+            <div class="moon-crater" style="width:9px;height:9px;top:14px;left:28px"></div>
+            <div class="moon-crater" style="width:6px;height:6px;top:30px;left:16px"></div>
+            <div class="moon-crater" style="width:4px;height:4px;top:22px;left:22px"></div>
+        </div>
+
+        <div class="stars" id="stars"></div>
+
+        <div class="title">
+            <h1>Majo</h1>
+            <p>"Hay personas que son como el sol, solo necesitan estar para iluminarlo todo."</p>
+            <p>Albert Camus</p>
+            <div class="divider"></div>
+        </div>
+
+        <div class="scene">
+            <div class="ground-glow"></div>
+
+            <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);overflow:visible" width="560"
+                height="540" viewBox="0 0 560 540">
+                <defs>
+                    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2b1a08" />
+                        <stop offset="40%" stop-color="#4d3215" />
+                        <stop offset="100%" stop-color="#1f1204" />
+                    </linearGradient>
+                    <linearGradient id="potRimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#6e4821" />
+                        <stop offset="50%" stop-color="#8c5e2e" />
+                        <stop offset="100%" stop-color="#543617" />
+                    </linearGradient>
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2d4216" />
+                        <stop offset="50%" stop-color="#476327" />
+                        <stop offset="100%" stop-color="#2d4216" />
+                    </linearGradient>
+
+                    <radialGradient id="sunflowerYellow" cx="50%" cy="10%" r="90%">
+                        <stop offset="0%" stop-color="#fff176" />
+                        <stop offset="40%" stop-color="#fbc02d" />
+                        <stop offset="100%" stop-color="#f57f17" />
+                    </radialGradient>
+                    <radialGradient id="sunflowerOrange" cx="50%" cy="10%" r="90%">
+                        <stop offset="0%" stop-color="#ffb74d" />
+                        <stop offset="60%" stop-color="#f57c00" />
+                        <stop offset="100%" stop-color="#e65100" />
+                    </radialGradient>
+
+                    <radialGradient id="sunflowerCenter" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#5d4037" />
+                        <stop offset="70%" stop-color="#3e2723" />
+                        <stop offset="100%" stop-color="#1a0c08" />
+                    </radialGradient>
+
+                    <radialGradient id="glowWarm" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(255,214,100,0.18)" />
+                        <stop offset="100%" stop-color="rgba(255,214,100,0)" />
+                    </radialGradient>
+
+                    <linearGradient id="soilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#241408" />
+                        <stop offset="100%" stop-color="#140b04" />
+                    </linearGradient>
+                </defs>
+
+                <polygon points="210,410 350,410 330,500 230,500" fill="url(#potGrad)" stroke="#4d3215"
+                    stroke-width="1.5" />
+                <rect x="200" y="402" width="160" height="14" rx="3" fill="url(#potRimGrad)" />
+                <ellipse cx="280" cy="407" rx="72" ry="9" fill="url(#soilGrad)" stroke="#331e0c" stroke-width="1" />
+
+                <path d="M280,430 C278,370 278,340 280,305 C282,270 280,240 280,192" stroke="url(#stemGrad)"
+                    stroke-width="6" fill="none" stroke-linecap="round" />
+                <path d="M275,420 C265,370 250,345 235,310 C222,278 212,258 200,225" stroke="url(#stemGrad)"
+                    stroke-width="5" fill="none" stroke-linecap="round" />
+                <path d="M285,420 C295,370 310,345 325,310 C338,278 348,258 360,225" stroke="url(#stemGrad)"
+                    stroke-width="5" fill="none" stroke-linecap="round" />
+                <path d="M278,430 C270,380 255,340 240,210" stroke="url(#stemGrad)" stroke-width="4.5" fill="none"
+                    stroke-linecap="round" />
+                <path d="M282,430 C290,380 305,340 320,210" stroke="url(#stemGrad)" stroke-width="4.5" fill="none"
+                    stroke-linecap="round" />
+
+                <path d="M263,290 C245,280 235,265 245,250 C256,260 262,272 263,290Z" fill="#3a541a" stroke="#4c6e22"
+                    stroke-width="1" />
+                <path d="M253,330 C233,322 223,306 235,290 C246,300 254,314 253,330Z" fill="#314716" stroke="#4c6e22"
+                    stroke-width="1" />
+                <path d="M297,290 C315,280 325,265 315,250 C304,260 298,272 297,290Z" fill="#3a541a" stroke="#4c6e22"
+                    stroke-width="1" />
+                <path d="M307,330 C327,322 337,306 325,290 C314,300 306,314 307,330Z" fill="#314716" stroke="#4c6e22"
+                    stroke-width="1" />
+
+                <line x1="195" y1="235" x2="250" y2="430" stroke="url(#stemGrad)" stroke-width="3" stroke-linecap="round" />
+                <line x1="365" y1="235" x2="310" y2="430" stroke="url(#stemGrad)" stroke-width="3" stroke-linecap="round" />
+
+                <polygon points="210,410 350,410 330,500 230,500" fill="url(#potGrad)" stroke="#4d3215"
+                    stroke-width="1.5" />
+                <rect x="200" y="402" width="160" height="14" rx="3" fill="url(#potRimGrad)" />
+
+                <ellipse cx="200" cy="225" rx="85" ry="85" fill="url(#glowWarm)" />
+                <ellipse cx="280" cy="192" rx="100" ry="100" fill="url(#glowWarm)" />
+                <ellipse cx="360" cy="225" rx="85" ry="85" fill="url(#glowWarm)" />
+
+                <g style="animation:float 4s ease-in-out infinite">
+                    <g transform="translate(200,225)">
+                        <g fill="url(#sunflowerOrange)" opacity="0.9">
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(0)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(22.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(45)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(67.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(90)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(112.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(135)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(157.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(180)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(202.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(225)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(247.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(270)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(292.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(315)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(337.5)" />
+                        </g>
+                        <g fill="url(#sunflowerYellow)">
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(11)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(56)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(101)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(146)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(191)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(236)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(281)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(326)" />
+                        </g>
+                        <circle cx="0" cy="0" r="17" fill="url(#sunflowerCenter)" stroke="#e65100" stroke-width="0.5" />
+                        <circle cx="0" cy="0" r="11" fill="none" stroke="#27120c" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5" />
+                    </g>
+                </g>
+
+                <g style="animation:floatCenter 4.5s ease-in-out infinite">
+                    <g transform="translate(280,192)">
+                        <g fill="url(#sunflowerOrange)" opacity="0.9">
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(0)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(22.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(45)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(67.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(90)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(112.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(135)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(157.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(180)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(202.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(225)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(247.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(270)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(292.5)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(315)" />
+                            <ellipse cx="0" cy="-40" rx="11" ry="32" transform="rotate(337.5)" />
+                        </g>
+                        <g fill="url(#sunflowerYellow)">
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(11)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(56)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(101)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(146)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(191)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(236)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(281)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="30" transform="rotate(326)" />
+                        </g>
+                        <circle cx="0" cy="0" r="21" fill="url(#sunflowerCenter)" stroke="#e65100" stroke-width="0.5" />
+                        <circle cx="0" cy="0" r="14" fill="none" stroke="#27120c" stroke-width="2" stroke-dasharray="3,2" opacity="0.5" />
+                    </g>
+                </g>
+
+                <g style="animation:float 3.8s ease-in-out infinite .4s">
+                    <g transform="translate(360,225)">
+                        <g fill="url(#sunflowerOrange)" opacity="0.9">
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(0)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(22.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(45)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(67.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(90)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(112.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(135)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(157.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(180)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(202.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(225)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(247.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(270)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(292.5)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(315)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(337.5)" />
+                        </g>
+                        <g fill="url(#sunflowerYellow)">
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(11)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(56)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(101)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(146)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(191)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(236)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(281)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(326)" />
+                        </g>
+                        <circle cx="0" cy="0" r="17" fill="url(#sunflowerCenter)" stroke="#e65100" stroke-width="0.5" />
+                        <circle cx="0" cy="0" r="11" fill="none" stroke="#27120c" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5" />
+                    </g>
+                </g>
+
+                <g style="animation:float 4.2s ease-in-out infinite .2s">
+                    <g transform="translate(240,210) scale(0.85)">
+                        <g fill="url(#sunflowerOrange)" opacity="0.85">
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(0)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(45)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(90)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(135)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(180)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(225)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(270)" />
+                            <ellipse cx="0" cy="-34" rx="9" ry="26" transform="rotate(315)" />
+                        </g>
+                        <g fill="url(#sunflowerYellow)">
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(22)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(67)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(112)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(157)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(202)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(247)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(292)" />
+                            <ellipse cx="0" cy="-34" rx="8" ry="25" transform="rotate(337)" />
+                        </g>
+                        <circle cx="0" cy="0" r="16" fill="url(#sunflowerCenter)" />
+                    </g>
+                </g>
+
+                <g style="animation:float 3.5s ease-in-out infinite .6s">
+                    <g transform="translate(320,210) scale(0.8)">
+                        <g fill="url(#sunflowerOrange)" opacity="0.85">
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(0)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(45)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(90)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(135)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(180)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(225)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(270)" />
+                            <ellipse cx="0" cy="-40" rx="10" ry="28" transform="rotate(315)" />
+                        </g>
+                        <g fill="url(#sunflowerYellow)">
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(22)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(67)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(112)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(157)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(202)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(247)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(292)" />
+                            <ellipse cx="0" cy="-40" rx="9" ry="27" transform="rotate(337)" />
+                        </g>
+                        <circle cx="0" cy="0" r="16" fill="url(#sunflowerCenter)" />
+                    </g>
+                </g>
+
+            </svg>
+        </div>
+
+        <canvas id="particles" style="position:absolute;inset:0;pointer-events:none;z-index:2"></canvas>
+    </div>
+
+    <script>
+        // Estrellas
+        const starsEl = document.getElementById('stars');
+        const starData = [
+            { t: 6, l: 8, s: 'big', d: 3.2 }, { t: 14, l: 18, s: 'sm', d: 2.1 }, { t: 5, l: 28, s: 'big', d: 4 }, { t: 22, l: 35, s: 'sm', d: 1.8 },
+            { t: 9, l: 45, s: 'sm', d: 2.8 }, { t: 17, l: 55, s: 'big', d: 3.5 }, { t: 7, l: 65, s: 'sm', d: 2 }, { t: 12, l: 73, s: 'big', d: 4.2 },
+            { t: 25, l: 80, s: 'sm', d: 1.5 }, { t: 19, l: 88, s: 'big', d: 3 }, { t: 3, l: 92, s: 'sm', d: 2.6 }, { t: 30, l: 5, s: 'sm', d: 3.8 },
+            { t: 38, l: 22, s: 'big', d: 2.4 }, { t: 44, l: 42, s: 'sm', d: 4.5 }, { t: 35, l: 60, s: 'sm', d: 1.9 }, { t: 42, l: 78, s: 'big', d: 3.1 },
+            { t: 50, l: 90, s: 'sm', d: 2.2 }, { t: 28, l: 50, s: 'big', d: 3.7 }, { t: 10, l: 40, s: 'sm', d: 1.6 }, { t: 16, l: 58, s: 'big', d: 2.9 }
+        ];
+        starData.forEach(s => {
+            const el = document.createElement('span');
+            el.className = 'star ' + s.s;
+            el.style.cssText = `top:${s.t}%;left:${s.l}%;--d:${s.d}s;animation-delay:${(Math.random() * 3).toFixed(1)}s`;
+            starsEl.appendChild(el);
+        });
+
+        // Partículas (Cambiadas a un tono dorado/amarillo como polen mágico)
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight }
+        resize();
+        window.addEventListener('resize', resize);
+        for (let i = 0; i < 28; i++) {
+            particles.push({
+                x: Math.random() * 1, y: .5 + Math.random() * .5, vx: (Math.random() - .5) * .0003, vy: -Math.random() * .0004 - .0001,
+                r: Math.random() * 1.8 + .4, a: Math.random() * .6 + .1, hue: Math.random() * 15 + 40 // Tono amarillo/oro
+            });
+        }
+        function animParticles() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.a += .002;
+                if (p.y < 0) { p.y = .85 + Math.random() * .15; p.x = .3 + Math.random() * .4 }
+                ctx.beginPath();
+                ctx.arc(p.x * W, p.y * H, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${p.hue},95%,75%,${Math.abs(Math.sin(p.a)) * .6})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animParticles);
+        }
+        function animParticles() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.a += .002;
+                if (p.y < 0) { p.y = .85 + Math.random() * .15; p.x = .3 + Math.random() * .4 }
+                ctx.beginPath();
+                ctx.arc(p.x * W, p.y * H, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${p.hue},90%,70%,${Math.abs(Math.sin(p.a)) * .5})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animParticles);
+        }
+        animParticles();
+    </script>
+</body>
+
+</html>
